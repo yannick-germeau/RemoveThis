@@ -1,0 +1,43 @@
+{
+	"background":
+	{
+		"scripts":
+		[
+			"background.js"			
+		]
+	},
+	"content_scripts":
+	[
+		{
+			"js":
+			[
+				"contextScript.js"
+			],
+			"css":
+			[
+				"context.css"
+			],
+			"matches":
+			[
+				"http://*/*",
+				"https://*/*"
+			]
+		}
+	],
+	"description": "Quickly remove element by right-click",
+	"manifest_version": 2,
+	"name": "Remove This",
+	"permissions":
+	[
+		"contextMenus",
+		"tabs",
+		"http://*/*",
+		"https://*/*"
+	],
+	"version": "0.1",
+	"icons": {
+		"16": "icon-bitty.png",
+		"48": "icon-small.png",
+		"128": "icon-large.png"
+	}
+}
