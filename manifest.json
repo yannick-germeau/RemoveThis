@@ -9,10 +9,7 @@
 	"content_scripts":
 	[
 		{
-			"js":
-			[
-				"contextScript.js"
-			],
+			
 			"css":
 			[
 				"context.css"
@@ -24,7 +21,7 @@
 			]
 		}
 	],
-	"description": "Quickly remove element by right-click",
+	"description": "Quickly remove dom element by right-click",
 	"manifest_version": 2,
 	"name": "Remove This",
 	"permissions":
@@ -39,5 +36,9 @@
 		"16": "icon-bitty.png",
 		"48": "icon-small.png",
 		"128": "icon-large.png"
-	}
+	},
+	"browser_action": {
+	    "default_icon": "icon-large.png",
+    	"default_title": "Remove This"
+    }
 }

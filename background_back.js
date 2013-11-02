@@ -1,47 +1,43 @@
-var rmThis = {
-	isOpen : false,
-	tabsList : []
-};
-
-
-rmThis.setActive = function (tab){
-	var self = this;
-	if (self.tabsList[tab.id].active ) {
+var isActive = isActive || false;
+var tabsList = [];
+var menuIsSet= false;
+function setActive(tab){
+	if (tabsList[tab.id].active ) {
 		
 		chrome.browserAction.setIcon({path: 'icon-large-active.png', tabId:tab.id});
 		chrome.tabs.executeScript(tab.id, {file:"contextScript.js"});
-		if (!self.isOpen){
+		if (!menuIsSet){
 			chrome.contextMenus.create({
 			  "title" : "Remove This",
 			  "type" : "normal",
 			  "contexts" : ["all"],
-			  "onclick" : rmThis.removeThis(),
+			  "onclick" : removeThis(),
 			});
-			self.isOpen = true;
+			menuIsSet = true;
 		}
 	}else{
 	    chrome.browserAction.setIcon({path: "icon-large.png", tabId:tab.id});
 	    chrome.tabs.executeScript(tab.id, {code:"isActive=false;"});
 	    chrome.contextMenus.removeAll();
-	    self.isOpen = false;
+	    menuIsSet = false;
   	}
 }
-rmThis.removeThis = function() {
+function removeThis() {
 	return function(info, tab) {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			chrome.tabs.sendMessage(tab.id, {action : { remove : true}});
 		})
 	};
 };
-rmThis.setDefault = function (tabId){
+function setDefault(tabId){
 	var settings = {
 		active : false,
 		alreadyLoad : false
 	};
-	rmThis.tabsList[tabId] = settings;
+	tabsList[tabId] = settings;
 }
 chrome.tabs.onCreated.addListener(function(tab){	
-	rmThis.setDefault(tab.id);
+	setDefault(tab.id);
 	console.log (tabsList, 'created');
 	
 });
@@ -49,25 +45,25 @@ chrome.tabs.onCreated.addListener(function(tab){
 chrome.tabs.onUpdated.addListener(function(tabId , changeInfo, tab){	
 	if (changeInfo.status == "loading"){
 
-		if(rmThis.tabsList[tab.id] == undefined){
-			rmThis.setDefault(tab.id);
+		if(tabsList[tab.id] == undefined){
+			setDefault(tab.id);
 		}
-		rmThis.setActive(tab);
+		setActive(tab);
 	}
 	
 });
 
 chrome.tabs.onRemoved.addListener(function(tabId , removeInfo){	
-	rmThis.tabsList.splice(tabId, 1);
+	tabsList.splice(tabId, 1);
 });
 
 chrome.browserAction.onClicked.addListener(function(tab){
-	if(rmThis.tabsList[tab.id] == undefined){
-		rmThis.setDefault(tab.id);
+	if(tabsList[tab.id] == undefined){
+		setDefault(tab.id);
 	}
-	rmThis.tabsList[tab.id].active = !rmThis.tabsList[tab.id].active;
+	tabsList[tab.id].active = !tabsList[tab.id].active;
 
-	rmThis.setActive(tab);
+	setActive(tab);
 
 });
 

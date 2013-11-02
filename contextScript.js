@@ -1,4 +1,5 @@
 var target;
+var isActive = true;
 window.addEventListener('contextmenu', function(event){
 	removeClass(target,"remove_this_vBan");
 	target = event.target || event.srcElement;
@@ -14,11 +15,12 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
 	if (msg.action.remove){
 		target.parentNode.removeChild(target);
 	}
+	if (msg.action.isActive){
+		isActive = msg.action.isActive;
+	}
 });
-
-
-
 function hasClass(ele,selector) {
+	
 	var rclass = '/[\n\t\r]/g';
 	var className = " " + selector + " ";
 	if (ele.nodeType === 1 && (" " + ele.className + " ").replace(rclass, " ").indexOf(className) > -1) {
@@ -26,10 +28,10 @@ function hasClass(ele,selector) {
 	}
 	return false;
 }
-function addClass(ele,cls) {
-	if (!this.hasClass(ele,cls)) ele.className += " "+cls;
-}
 
+function addClass(ele,cls) {
+	if (isActive && !this.hasClass(ele,cls)) ele.className += " "+cls;
+}
 
 function removeClass(elem, value) {
 	var className;
